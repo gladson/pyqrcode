@@ -2,10 +2,15 @@ pyqrcode
 ================================
 
 The pyqrcode module is a QR code generator that is simple to use and written
-in pure python. The module has the ability to choose the best encoding for your
-data automatically. You can also specify the error correction level. The module
-can also choose the smallest QR code to fit your data automatically. All of
-these helpers can be controlled manually.
+in pure python 3. The module can automate most of the building process for you.
+Most QR codes can be created using only two lines of code!
+
+
+Unlike other generators, all of the helpers can be controlled manually. You are
+free to any or all of the properties of your QR code.
+
+QR codes can be saved as SVG, PNG (by using the
+[pypng](https://pypi.python.org/pypi/pypng/) module), or plain text.
 
 The pyqrcode module attempts to follow the QR code standard as closely as
 possible. The terminology and the encodings used in pyqrcode come directly
@@ -15,13 +20,14 @@ standard.
 Requirements
 -------------------------
 
-The pyqrcode module only requires Python 3. You may want to install pypng in
-order to render PNG files, but it is optional.
+The pyqrcode module only requires Python 2.7 or Python 3. You may want to
+install pypng in order to render PNG files, but it is optional.
 
 Installation
 ------------
 
-Installation is simple. It can be installed from pip using the following command:
+Installation is simple. It can be installed from pip using the following
+command:
 
 ```bash
 $ pip install pyqrcode
@@ -36,23 +42,30 @@ $ python setup.py install
 Usage
 -----
 
-This is the only import you need. The QRCode class will build the code
-render the QR code.
+This is the only import you need. The heart of the module is the QRCode class.
+You can construct the class normally, or use the *create* wrapper function.
 
 ```python
->>> from pyqrcode import QRCode
+>>> import pyqrcode
 ```
+
+PyPi
+----
+
+* _PyPi page_: https://pypi.python.org/pypi?name=PyQRCode&:action=display
+
+* _Documentation_: http://pythonhosted.org/PyQRCode/
 
 ### Encoding Data ###
 
 This module supports three encodings for data: numeric, alphanumeric, and
 binary. The numeric type is the most efficient way to encode digits. As the
-name implys it is designed to encode integers. Some numbers might be two
+name implies it is designed to encode integers. Some numbers might be two
 large, the object can use a string containing only digits instead of an
 actual number.
 
 ```python
->>> number = QRCode(123456789012345)
+>>> number = pyqrcode.create(123456789012345)
 ````
 
 The alphanumeric type is very limited in that it can only encode some ASCII
@@ -63,14 +76,14 @@ available characters will let you encode a URL (the string is uppercased
 automatically).
 
 ```python
->>> url = QRCode('http://uca.edu')
+>>> url = pyqrcode.create('http://uca.edu')
 ```
 
 When all else fails the data can be encoded in pure binary. The quotation below
 must be encoded in binary because of the apostrophe and the new line character.
 
 ```python
->>> life = QRCode('''MR. CREOSOTE: Better get a bucket. I'm going to throw up.
+>>> life = pyqrcode.create('''MR. CREOSOTE: Better get a bucket. I'm going to throw up.
     MAITRE D: Uh, Gaston! A bucket for monsieur. There you are, monsieur.''')
 ```
 There is one other encoding that is used for Kanji characters. This encoding
@@ -81,7 +94,7 @@ to help me write an encoder for Kanji, shoot me an email.
 
 There are many situation where you might wish to have more fine grained control
 over how the QR Code is generated. You can specify all the properties of your
-QR code through the QRCode constructor. There are three main properties to a
+QR code through the *create* function. There are three main properties to a
 QR code.
 
 The _error_ parameter sets the error correction level of the code. Each level
@@ -105,12 +118,12 @@ mentioned above three of the four possible encodings have been written. By
 default the object uses the most efficient encoding for the contents. You can
 change this though. See qrcode.tables.modes for a list of possible values
 for this parameter.
-        
+
 The code below constructs a QR code with 30% error correction, size 27, and
 forces the encoding to be binary (rather than numeric).
 
 ```python
->>> big_code = QRCode('0987654321', error='L', version=27, mode='binary')
+>>> big_code = pyqrcode.create('0987654321', error='L', version=27, mode='binary')
 ```
 
 ### Rendering ###
@@ -125,7 +138,7 @@ The SVG renderer outputs the QR Code as a scalable vector graphic. This
 renderer does not require any external modules. Instead it hand draws the
 QR code as a set of lines.
 
-```python    
+```python
 >>> url.svg(sys.stdout, scale=1)
 >>> url.svg('uca.svg', scale=4, module_color="#7D007D")
 ```
@@ -137,7 +150,7 @@ take advantage of transparency.
 ```python
 >>> number.png('big-number.png')
 >>> life.png('sketch.png', scale=6, module_color=[0, 0, 0, 128], background=[0xff, 0xff, 0xcc])
-```    
+```
 Finally, there is a text based renderer. This will output the QR code as a
 string of 1's and 0's, with each row of the code on a new line.
 
